@@ -1,0 +1,8 @@
+node_modules
+# Block heavy production 3D assets from going to GitHub
+apps/web/public/assets/
+*.ply
+*.sog
+*.glb
+.next/
+node_modules/

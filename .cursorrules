@@ -1,0 +1,14 @@
+# Front-End Stack Rules
+- Framework: Next.js 14+ (App Router, Strict TypeScript)
+- Styling: Tailwind CSS, Dark Mode default, Shadcn/ui conventions
+- Structure: Follow atomic design pattern in apps/web/src/components
+
+# 3D Engineering Rules
+- Library: PlayCanvas Engine (Latest stable release)
+- Environment Separation: NEVER import React/Next state hooks into packages/core-3d. Keep the 3D pipeline completely headless, controlled purely through native DOM events or a crisp pub/sub event emitter class.
+- Performance Rule: All math, vector operations, and matrix transformations must run inside packages/core-3d to maximize frames-per-second (FPS).
+
+# AI Coding Style
+- Write production-grade, typed, modular code ready for senior developer handoff.
+- Avoid loose or 'any' type assertions in TypeScript. Use descriptive comments on heavy mathematical functions.
+- If rewriting an existing file, keep existing functional code intact unless explicitly asked to refactor.

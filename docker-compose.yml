@@ -1,0 +1,121 @@
+# ════════════════════════════════════════════════════════════════════════
+#  VenuePlatform — Docker Compose Configuration
+#
+#  Services  : web (Next.js 14 production server)
+#  Public port: 3000
+#
+#  Usage
+#  ─────
+#  docker compose up --build          # first run / after source changes
+#  docker compose up -d               # detached background
+#  docker compose down                # teardown
+#  docker compose logs -f web         # tail logs
+# ════════════════════════════════════════════════════════════════════════
+
+version: "3.9"
+
+services:
+
+  # ── Next.js production server ─────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Pin to the runner stage — skips copying build toolchain and source
+      # into the final image, reducing attack surface and image size.
+      target: runner
+
+    container_name: venue_platform_web
+    image: venue-platform:latest
+
+    # ── Port mapping ────────────────────────────────────────────────────
+    # Maps container port 3000 (Next.js) to host port 3000.
+    # Change the left-hand value to run on a different host port, e.g.:
+    #   "8080:3000" → accessible at http://localhost:8080
+    ports:
+      - "3000:3000"
+
+    # ── Environment variable proxy ──────────────────────────────────────
+    # These values are layered on top of the ENV directives baked into the
+    # Dockerfile, allowing per-deployment overrides without rebuilding.
+    #
+    # Add application-specific secrets (API keys, DB URIs) here or via an
+    # `env_file: [.env.production]` directive alongside this block.
+    environment:
+      # Core runtime identity
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+
+      # ── V8 heap / GC tuning ────────────────────────────────────────
+      # max-old-space-size: 4 GB old-gen heap ceiling.
+      #   Prevents OOM crashes when the PlayCanvas WebGL context and the
+      #   3DGS point-cloud asset registry accumulate large in-memory
+      #   buffers during high-density concurrent loading cycles.
+      #
+      # --gc-interval=100: nudges the V8 scavenger to run after every
+      #   100 allocations, releasing short-lived canvas frame buffers and
+      #   measurement anchor objects before they promote to the old-gen
+      #   heap and trigger expensive major GC pauses.
+      #
+      # --expose-gc: exposes `global.gc()` for any future server-side
+      #   housekeeping that explicitly requests a collection after a large
+      #   3DGS asset unload.
+      - NODE_OPTIONS=--max-old-space-size=4096 --gc-interval=100 --expose-gc
+
+    # ── Resource limits ─────────────────────────────────────────────────
+    deploy:
+      resources:
+        limits:
+          # Hard memory ceiling: 5 GB
+          #   Prevents a runaway WebGL canvas processing thread (e.g.
+          #   a malformed .ply file triggering an unbounded parse loop)
+          #   from consuming all host memory and starving other processes
+          #   or container workloads sharing the same machine.
+          memory: 5g
+
+          # CPU cap: 2 virtual cores.
+          #   3DGS rasterisation is inherently single-threaded on the JS
+          #   event loop; capping at 2 cores allows the GC and I/O workers
+          #   to operate on a dedicated core without starving the main
+          #   render loop under concurrent load.
+          cpus: "2.0"
+
+        reservations:
+          # Guaranteed allocation: 1 GB
+          #   Ensures the container scheduler does not evict the Next.js
+          #   server during bursty host memory pressure from other services.
+          memory: 1g
+          cpus: "0.5"
+
+    # ── Restart policy ──────────────────────────────────────────────────
+    # Automatically restarts after a crash or an explicit `docker stop`.
+    # Does NOT restart if the container exits cleanly (e.g. `docker stop`
+    # followed by `docker compose down`).
+    restart: unless-stopped
+
+    # ── Health check ────────────────────────────────────────────────────
+    # Polls the Next.js root endpoint every 30 s.
+    # The container is marked healthy once three consecutive requests
+    # succeed.  Compose and orchestrators (e.g. Coolify, Render) use this
+    # signal before routing traffic to the container.
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+
+    # ── Logging ─────────────────────────────────────────────────────────
+    # json-file driver with rotation caps prevents log files from filling
+    # the host disk during extended production runs.
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"

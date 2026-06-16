@@ -1,0 +1,56 @@
+# ════════════════════════════════════════════════════════════════════════
+#  .dockerignore — VenuePlatform
+#
+#  Excludes files from the Docker build context sent to the daemon.
+#  Critical: without this file, `COPY . .` in the builder stage would
+#  overwrite the deps-stage node_modules with the host's symlink tree,
+#  breaking the pnpm virtual store inside the container.
+# ════════════════════════════════════════════════════════════════════════
+
+# ── Node module stores ───────────────────────────────────────────────────
+# All node_modules directories (root + workspaces) are installed fresh
+# inside the deps stage from the frozen lockfile.
+node_modules
+**/node_modules
+
+# ── Next.js build cache ─────────────────────────────────────────────────
+# The builder stage runs `next build` from scratch; importing a stale
+# .next directory from the host would produce a non-deterministic image.
+apps/web/.next
+apps/web/.next/**
+
+# ── TypeScript compiled output ──────────────────────────────────────────
+# Rebuilt inside the builder stage via `tsc`.
+packages/core-3d/dist
+packages/core-3d/dist/**
+
+# ── Turborepo artefact cache ─────────────────────────────────────────────
+.turbo
+**/.turbo
+
+# ── Environment files ────────────────────────────────────────────────────
+# Never bake secrets into an image layer.
+.env
+.env.*
+!.env.example
+
+# ── Development & editor artefacts ──────────────────────────────────────
+.git
+.gitignore
+.github
+.cursorrules
+.cursor
+*.md
+LICENSE
+
+# ── Docker files themselves ──────────────────────────────────────────────
+# Prevents recursive COPY of infrastructure files into the build context.
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# ── OS / IDE noise ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

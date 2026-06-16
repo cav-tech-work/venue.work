@@ -1,0 +1,436 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ─────────────────────────────────────────── */
+:root {
+  --background: #000000;
+  --surface: #09090b;
+  --card: #0d0d10;
+  --border: #1e1e24;
+  --border-subtle: #14141a;
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #52525b;
+  --accent: #6366f1;
+  --accent-dim: #4f46e5;
+  --accent-glow: rgba(99, 102, 241, 0.15);
+  --cyan: #22d3ee;
+  --cyan-glow: rgba(34, 211, 238, 0.12);
+  --amber: #fbbf24;
+  --scan-speed: 4s;
+}
+
+/* ─── Base Reset & Global ────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ─── Selection ──────────────────────────────────────────────────────── */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: #f4f4f5;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ─── Premium Background: Grid + Radial Vignette ─────────────────────── */
+.bg-premium-grid {
+  position: relative;
+  background-color: var(--background);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.bg-premium-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 60% at 50% 0%,
+    rgba(99, 102, 241, 0.07) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Scanning Beam Animation ────────────────────────────────────────── */
+.scan-beam-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scan-beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(99, 102, 241, 0.0) 10%,
+    rgba(99, 102, 241, 0.6) 40%,
+    rgba(34, 211, 238, 0.8) 50%,
+    rgba(99, 102, 241, 0.6) 60%,
+    rgba(99, 102, 241, 0.0) 90%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 20px 4px rgba(99, 102, 241, 0.2),
+    0 0 60px 8px rgba(34, 211, 238, 0.08);
+  animation: scanVertical var(--scan-speed) linear infinite;
+  top: 0;
+}
+
+.scan-beam::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(99, 102, 241, 0.04) 0%,
+    transparent 100%
+  );
+}
+
+@keyframes scanVertical {
+  0% {
+    top: -2px;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+/* ─── Corner Bracket Frame ───────────────────────────────────────────── */
+.frame-bracket {
+  position: relative;
+}
+
+.frame-bracket::before,
+.frame-bracket::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  z-index: 10;
+}
+
+.frame-bracket::before {
+  top: 0;
+  left: 0;
+  border-top: 1.5px solid var(--cyan);
+  border-left: 1.5px solid var(--cyan);
+  box-shadow: -2px -2px 8px rgba(34, 211, 238, 0.3);
+}
+
+.frame-bracket::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 1.5px solid var(--cyan);
+  border-right: 1.5px solid var(--cyan);
+  box-shadow: 2px 2px 8px rgba(34, 211, 238, 0.3);
+}
+
+/* ─── Animated Gradient Border ───────────────────────────────────────── */
+.gradient-border {
+  position: relative;
+  background: var(--surface);
+  border-radius: 0.5rem;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.5),
+    rgba(34, 211, 238, 0.2),
+    rgba(99, 102, 241, 0.1),
+    rgba(34, 211, 238, 0.4)
+  );
+  background-size: 300% 300%;
+  animation: borderFlow 4s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes borderFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ─── Glow Text ──────────────────────────────────────────────────────── */
+.text-glow-accent {
+  text-shadow:
+    0 0 20px rgba(99, 102, 241, 0.6),
+    0 0 40px rgba(99, 102, 241, 0.2);
+}
+
+.text-glow-cyan {
+  text-shadow:
+    0 0 20px rgba(34, 211, 238, 0.6),
+    0 0 40px rgba(34, 211, 238, 0.2);
+}
+
+/* ─── Utility: Fade Up ───────────────────────────────────────────────── */
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.7s ease-out forwards;
+}
+
+.animate-fade-up-delay-1 {
+  animation-delay: 0.15s;
+}
+.animate-fade-up-delay-2 {
+  animation-delay: 0.3s;
+}
+.animate-fade-up-delay-3 {
+  animation-delay: 0.45s;
+}
+.animate-fade-up-delay-4 {
+  animation-delay: 0.6s;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Flicker ────────────────────────────────────────────────────────── */
+.animate-flicker {
+  animation: flicker 8s linear infinite;
+}
+
+@keyframes flicker {
+  0%,
+  89%,
+  91%,
+  93%,
+  100% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.55;
+  }
+  92% {
+    opacity: 0.85;
+  }
+}
+
+/* ─── Ping Dot ───────────────────────────────────────────────────────── */
+@keyframes ping-slow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+.animate-ping-slow {
+  animation: ping-slow 2.4s ease-in-out infinite;
+}
+
+/* ─── Global @media print layout utility matrix ─────────────────────────
+ *
+ * This block is the persistent stylesheet-level print enforcement layer.
+ * It runs in addition to the dynamically injected <style> tag that the
+ * LegalManifestPortal.handlePrint() function injects at runtime.
+ *
+ * Purpose
+ * ───────
+ * 1. Hide all non-printable view elements (canvas, viewer chrome, sidebar)
+ *    using `display: none !important` — equivalent to the Tailwind
+ *    `print:hidden` utility but applied at the global CSS level so it
+ *    catches any element that might be rendered outside the React tree
+ *    (e.g. PlayCanvas WebGL context, browser extension overlays).
+ *
+ * 2. Force the primary portal container and all nested checklist nodes to:
+ *      height: auto !important
+ *      overflow: visible !important
+ *      position: static !important
+ *    so the full document renders page-by-page without scroll-container
+ *    clipping.
+ * ──────────────────────────────────────────────────────────────────────── */
+@media print {
+
+  /* ── 1: Non-printable view elements ─────────────────────────────────── */
+
+  /* 3D canvas viewport — PlayCanvas WebGL render surface */
+  canvas {
+    display: none !important;
+  }
+
+  /* Viewer page chrome: top header bar, bottom status bar */
+  header,
+  footer {
+    display: none !important;
+  }
+
+  /* TelemetryLedger sidebar, LayersPanel, InspectorPanel */
+  aside {
+    display: none !important;
+  }
+
+  /* Any navigation menus */
+  nav {
+    display: none !important;
+  }
+
+  /* Tailwind print:hidden classes (plain + escaped colon variants) */
+  .print\:hidden,
+  [class~="print:hidden"] {
+    display: none !important;
+  }
+
+  /* Scan beam overlay, HUD decorators, background grids */
+  .scan-beam-container,
+  .bg-premium-grid,
+  .gradient-border,
+  .frame-bracket {
+    display: none !important;
+  }
+
+  /* ── 2: Portal backdrop → static page flow ───────────────────────────── */
+
+  #vp-portal-backdrop {
+    position:        static      !important;
+    inset:           auto        !important;
+    background:      transparent !important;
+    backdrop-filter: none        !important;
+    -webkit-backdrop-filter: none !important;
+    padding:         0           !important;
+    display:         block       !important;
+    z-index:         auto        !important;
+  }
+
+  /* ── 3: Portal card — full-width, no clip ────────────────────────────── */
+
+  #vp-portal-card {
+    position:      static   !important;
+    width:         100%     !important;
+    max-width:     100%     !important;
+    height:        auto     !important;
+    max-height:    none     !important;
+    overflow:      visible  !important;
+    background:    #ffffff  !important;
+    color:         #111111  !important;
+    border:        1px solid #cccccc !important;
+    border-radius: 0        !important;
+    box-shadow:    none     !important;
+  }
+
+  #vp-portal-card > *,
+  #vp-portal-card .flex-1 {
+    height:     auto    !important;
+    max-height: none    !important;
+    overflow:   visible !important;
+  }
+
+  /* ── 4: Checklist primary container and ALL nested nodes ─────────────── *
+   *                                                                         *
+   * Satisfies the spec verbatim:                                            *
+   *   height: auto !important;                                              *
+   *   overflow: visible !important;                                         *
+   *   position: static !important;                                          */
+
+  [data-print-region="checklist-root"],
+  [data-print-region="checklist-root"] *,
+  [data-print-region="checklist-items"],
+  [data-print-region="checklist-items"] * {
+    height:     auto    !important;
+    overflow:   visible !important;
+    position:   static  !important;
+    max-height: none    !important;
+    page-break-inside: avoid;
+  }
+
+  /* ── 5: Print-safe global typography ────────────────────────────────── */
+
+  html,
+  body {
+    background:  #ffffff !important;
+    color:       #111111 !important;
+    font-size:   10pt    !important;
+    line-height: 1.55    !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-shadow:  none !important;
+    text-shadow: none !important;
+  }
+}
