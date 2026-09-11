@@ -136,6 +136,16 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/package.json           .
 COPY --from=builder --chown=nextjs:nodejs /app/package.json                    ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/pnpm-workspace.yaml             ./pnpm-workspace.yaml
 
+# Demo splat (~304MB) fetched from GitHub Releases — kept out of git so the
+# public Render demo URL can serve real venue geometry without localhost.
+USER root
+RUN apk add --no-cache curl \
+ && mkdir -p ./apps/web/public/assets/splats/demo \
+ && curl -fsSL -o ./apps/web/public/assets/splats/demo/capture.ply \
+      "https://github.com/cav-tech-work/venue.work/releases/download/demo-assets/venue-2-capture.ply" \
+ && chown -R nextjs:nodejs ./apps/web/public/assets \
+ && apk del curl
+
 # ── Switch to non-root user before exposing the port ────────────────────
 USER nextjs
 

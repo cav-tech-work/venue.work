@@ -37,7 +37,7 @@ export const venues: VenueProfile[] = [
     country: "India",
     capacity: 1200,
     ratePerDay: 850000,
-    splatUrl: "/assets/splats/venue-1/capture.ply",
+    splatUrl: "/assets/splats/demo/capture.ply",
     availableDates: [
       "2026-08-10",
       "2026-08-14",
@@ -91,7 +91,7 @@ export const venues: VenueProfile[] = [
     country: "India",
     capacity: 3500,
     ratePerDay: 1950000,
-    splatUrl: "/assets/splats/venue-2/capture.ply",
+    splatUrl: "/assets/splats/demo/capture.ply",
     availableDates: [
       "2026-07-26",
       "2026-08-02",
@@ -151,7 +151,7 @@ export const venues: VenueProfile[] = [
     country: "India",
     capacity: 800,
     ratePerDay: 620000,
-    splatUrl: "/assets/splats/venue-3/capture.ply",
+    splatUrl: "/assets/splats/demo/capture.ply",
     availableDates: [
       "2026-08-08",
       "2026-08-22",
