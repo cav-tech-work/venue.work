@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: venue-work
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm install -g pnpm@9 && pnpm install --frozen-lockfile && pnpm turbo build --filter=@venue/web
+    startCommand: node apps/web/.next/standalone/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=512
+      - key: PORT
+        value: 3000
+      - key: HOSTNAME
+        value: 0.0.0.0
+    healthCheckPath: /
+    autoDeploy: true
