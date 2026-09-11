@@ -101,12 +101,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-# V8 old-generation heap ceiling raised from 512 MB (default) to 4 GB.
-# This allows the PlayCanvas WebGL canvas context and the 3DGS asset
-# registry to buffer large point-cloud payloads during concurrent load
-# spikes without triggering a heap-OOM crash that would silently kill
-# the server process.
-ENV NODE_OPTIONS=--max-old-space-size=4096
+# V8 old-generation heap ceiling. Free Render plans have ~512 MB RAM —
+# keep the heap under that so the process isn't OOM-killed at boot.
+ENV NODE_OPTIONS=--max-old-space-size=384
 
 # ── Non-root user — defence-in-depth for production workloads ───────────
 RUN addgroup --system --gid 1001 nodejs && \
