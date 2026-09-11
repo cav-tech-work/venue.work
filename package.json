@@ -11,6 +11,9 @@
   },
   "packageManager": "pnpm@11.5.0",
   "pnpm": {
+    "neverBuiltDependencies": [
+      "canvas"
+    ],
     "ignoredBuiltDependencies": [
       "canvas"
     ]

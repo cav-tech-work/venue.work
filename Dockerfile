@@ -53,7 +53,7 @@ COPY apps/web/package.json          ./apps/web/package.json
 
 # --frozen-lockfile: rejects any lock-file drift → reproducible installs
 # --prefer-offline:  uses the pnpm content-addressable cache store first
-RUN pnpm install --frozen-lockfile --prefer-offline
+RUN pnpm install --frozen-lockfile --prefer-offline --ignore-scripts
 
 
 # ── Stage 3: builder — compile the full production artefact tree ────────
