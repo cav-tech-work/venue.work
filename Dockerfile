@@ -2,7 +2,7 @@
 #  VenuePlatform — Multi-stage Production Dockerfile
 #
 #  Stack    : pnpm 11.5.0 · Turborepo 2 · @venue/core-3d · Next.js 14
-#  Runtime  : node:20-alpine (LTS)
+#  Runtime  : node:22-alpine (LTS)
 #
 #  Build stages
 #  ────────────
@@ -19,10 +19,10 @@
 
 
 # ── Stage 1: base ──────────────────────────────────────────────────────
-# Shared Alpine + Node 20 LTS foundation.
+# Shared Alpine + Node 22 foundation (required by pnpm 11.5).
 # libc6-compat resolves musl / glibc compatibility for native bindings
 # (PlayCanvas and any future canvas-native modules may require it).
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 RUN apk add --no-cache libc6-compat
 
@@ -85,7 +85,7 @@ RUN pnpm run build
 # ── Stage 4: runner — minimal production image ─────────────────────────
 # Re-derives from the clean base (no build toolchain, no source files).
 # Only the artefacts required by `next start` are copied in.
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 RUN apk add --no-cache libc6-compat
 RUN corepack enable && \
