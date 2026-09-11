@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@spatial/core-3d'],
+  transpilePackages: ['@venue/core-3d'],
   reactStrictMode: true,
   output: 'standalone',
 };

@@ -14,6 +14,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@venue/core-3d':
+        specifier: workspace:*
+        version: link:../../packages/core-3d
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
