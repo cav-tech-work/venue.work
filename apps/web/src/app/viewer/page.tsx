@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { LegalManifestPortal } from "@/components/viewer/LegalManifestPortal";
@@ -930,7 +930,7 @@ function SpatialToolbar({
 
 /* ─── Page ───────────────────────────────────────────────────────────── */
 
-export default function ViewerPage() {
+function ViewerInner() {
   const searchParams = useSearchParams();
   const venueId = searchParams.get("id");
 
@@ -1368,5 +1368,27 @@ export default function ViewerPage() {
      */}
     <MeasurementBadgeOverlay toolMode={toolMode} />
     </>
+  );
+}
+
+
+/* ─── Page export — Suspense boundary for useSearchParams ─────────────── */
+
+export default function ViewerPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center bg-background">
+          <div className="flex flex-col items-center gap-4">
+            <Activity className="h-8 w-8 text-accent animate-pulse" />
+            <p className="font-mono text-xs text-text-muted tracking-widest uppercase">
+              Initialising Viewer…
+            </p>
+          </div>
+        </div>
+      }
+    >
+      <ViewerInner />
+    </Suspense>
   );
 }
