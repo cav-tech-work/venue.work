@@ -565,7 +565,7 @@ function ExportDropdown({
   onTriggerExport: () => void;
   isOpen:          boolean;
   onToggle:        () => void;
-  dropdownRef:     React.RefObject<HTMLDivElement | null>;
+  dropdownRef:     React.RefObject<HTMLDivElement>;
 }) {
   const cfg     = EXPORT_FORMAT_CONFIG[format];
   const allFmts = (["ply", "ply-compressed", "sog"] as ExportFormat[]);
@@ -824,7 +824,7 @@ function EditorInner() {
   const [exportStage,     setExportStage]     = useState<ExportStage>("idle");
   const [exportProgress,  setExportProgress]  = useState(0);
   const [exportMenuOpen,  setExportMenuOpen]  = useState(false);
-  const exportDropdownRef                     = useRef<HTMLDivElement>(null);
+  const exportDropdownRef                     = useRef<HTMLDivElement>(null!);
 
   /* ── Panels ───────────────────────────────────────────────────────── */
   const [layersPanelOpen,    setLayersPanelOpen]    = useState(true);
